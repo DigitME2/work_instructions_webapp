@@ -1,0 +1,5 @@
+/.idea/
+/app/prod.db
+/app/static/temp/
+/app/static/images/
+/start.sh

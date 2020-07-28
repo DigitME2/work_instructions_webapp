@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container mt-2">
+    <form class="form-control border-0" method="get" action="{{ url_for('prod_recording.new_batch') }}">
+        <input type="submit" class="btn btn-primary" value="Create New Batch">
+    </form>
+        <h2 class="mt-2">Batches in progress</h2>
+        <div class="list-group">
+            {% for b in batches %}
+                {% if b != None %}
+                        <a class="list-group-item list-group-item-action" href="{{ url_for('prod_recording.production', batch_id=b.id)}}">
+                            Batch {{ b.batch_number }} - {{ b.part_type.part_name }} ({{ b.parts|length }} parts)
+                        </a>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+
+
+{% endblock %}
