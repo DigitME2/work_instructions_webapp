@@ -1,5 +1,6 @@
 /.idea/
 /app/prod.db
+/config.py
 /app/static/temp/
 /app/static/images/
 /start.sh
