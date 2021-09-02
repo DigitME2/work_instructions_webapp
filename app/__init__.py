@@ -1,8 +1,16 @@
-from config import Config
+import sys
+import logging
+
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 
+
+try:
+    from config import Config
+except ModuleNotFoundError:
+    logging.error("Could not find config.py file. An example file is provided as config.py.example")
+    sys.exit()
 
 db = SQLAlchemy()
 login_manager = LoginManager()
