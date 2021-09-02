@@ -2,13 +2,18 @@ from app.default.models import Batch, Csv, Field, ProdData
 from datetime import datetime
 import csv
 import os
+from pathlib import Path
 
 
 def create_csv_from_data(batch_id):
     """ Create a CSV file outputting all of the data in the database for a batch
     ('data' does not include CSV logs that have been uploaded into the db)"""
     filename = 'data.csv'
+    directory = os.path.abspath(os.path.join('app', 'static', 'temp'))
+    os.makedirs(directory, exist_ok=True)
     filepath = os.path.abspath(os.path.join('app', 'static', 'temp', filename))
+    # Create the file if it doesn't exist
+    Path(filepath).touch()
     # Remove the old file
     with open(filepath, 'w+') as csv_file:
         batch = Batch.query.get_or_404(batch_id)
