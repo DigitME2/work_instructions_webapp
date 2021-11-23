@@ -1,34 +1,34 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Create part type</h1>
-    <h2>{{part_type.part_name}}</h2>
+    <div class="container">
+        <h1>Create part type</h1>
 
-    <form action="" method="post">
+        <form action="" method="post">
 
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.part_name.label }}<br>
-            {{ form.part_name(size=32) }} {{ form.submit() }}
-            {% for error in form.part_name.errors %}
-                <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-               {{ form.csrf_token }}
+            {{ form.hidden_tag() }}
+            <p>
+                {{ form.part_name.label }}<br>
+                {{ form.part_name(size=32) }} {{ form.submit() }}
+                {% for error in form.part_name.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+            {{ form.csrf_token }}
 
-    </form>
+        </form>
 
 
-    <h2> Steps </h2>
-            <form action="{{ url_for('part_creation.add_step') }}" method="post">
+        <h2> Steps </h2>
+        <form action="{{ url_for('part_creation.add_step') }}" method="post">
             <input type="hidden" name="part_type_id" value="{{ part_type.id }}"/>
             <input type="submit" value="Create Step"/>
         </form>
         <!--Create the list of existing steps-->
         {% for s in steps %}
             {% if p != None %}
-                <a href="{{url_for('part_creation.edit_step')}}?part_type_id={{part_type.id}}&step_id={{s.id}}">
-                    {{s.step_number}} - {{s.step_title}}<br></a>
+                <a href="{{ url_for('part_creation.edit_step') }}?part_type_id={{ part_type.id }}&step_id={{ s.id }}">
+                    {{ s.step_number }} - {{ s.step_title }}<br></a>
             {% endif %}
         {% endfor %}
 
@@ -36,6 +36,6 @@
             <input type="hidden" name="part_type_id" value="{{ part_type.id }}"/>
             <input type="submit" value="Delete Last Step"/>
         </form>
-
+    </div>
 
 {% endblock %}
