@@ -87,7 +87,7 @@ def edit_step():
             # Create the directory if it doesn't exist
             directory = '/'.join([current_app.config['UPLOAD_FOLDER'], part_type.part_name])
             if not os.path.exists(directory):
-                os.mkdir(directory)
+                os.makedirs(directory)
             filename = "step" + str(step.step_number) + file_extension
             # Delete the image if one already exists
             if os.path.isfile('/'.join([directory, filename])):
