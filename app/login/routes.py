@@ -1,4 +1,4 @@
-from app import db
+from app.extensions import db
 from app.login import bp
 from app.login.forms import LoginForm, RegisterForm, ChangePasswordForm
 from app.default.models import User

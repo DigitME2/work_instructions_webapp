@@ -1,4 +1,4 @@
-from app import db
+from app.extensions import db
 from app.prod_recording import bp
 from app.prod_recording.export import recreate_csv_log, create_csv_from_data
 from app.prod_recording.forms import NewBatchForm

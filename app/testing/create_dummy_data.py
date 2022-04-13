@@ -1,5 +1,5 @@
 from app.default.models import *
-from app import db
+from app.extensions import db
 from time import time
 
 # A script to populate the database with fake information, for testing purposes

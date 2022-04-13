@@ -1,4 +1,4 @@
-from app import db
+from app.extensions import db
 from app.prod_recording.export import recreate_csv_log, create_csv_from_data
 from app.default import bp
 from app.default.models import User, Batch, PartType
@@ -8,15 +8,8 @@ from flask import render_template, request, redirect, url_for, abort, send_file
 from flask_login import current_user, login_required
 
 
-
 @bp.route('/')
 def default():
-    db.create_all()
-    if len(User.query.all()) == 0:
-        base_admin = User(username="admin", admin=True)
-        base_admin.set_password("password")
-        db.session.add(base_admin)
-    db.session.commit()
     return redirect(url_for('login.login'))
 
 
@@ -29,7 +22,6 @@ def index():
     else:
         user = {'username': "nobody"}
     return render_template('index.html', title='Home', user=user)
-
 
 
 @bp.route('/home', methods=['GET', 'POST'])
@@ -68,7 +60,7 @@ def home():
                            admin=admin)
 
 
-@bp.route('/adminhome', methods=['GET', 'POST'])
+@bp.route('/admin-home', methods=['GET', 'POST'])
 @login_required
 def admin_home():
     """The home page for a logged-in admin"""
@@ -143,7 +135,7 @@ def admin_home():
 
     nav_bar_title = "Admin Home"
 
-    return render_template('adminhome.html',
+    return render_template('admin-home.html',
                            requested_year=requested_year,
                            requested_month=requested_month,
                            current_year=now.year,

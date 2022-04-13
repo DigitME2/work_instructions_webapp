@@ -1,10 +1,12 @@
-import sys
 import logging
+import sys
 
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager
+from sqlalchemy import create_engine
 
+from app.default.models import User
+from app.extensions import db, login_manager
+from app.init_db import init_db
 
 try:
     from config import Config
@@ -12,15 +14,12 @@ except ModuleNotFoundError:
     logging.error("Could not find config.py file. An example file is provided as config.py.example")
     sys.exit()
 
-db = SQLAlchemy()
-login_manager = LoginManager()
-login_manager.login_view = 'login'
-
 
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
 
+    engine = create_engine(Config.SQLALCHEMY_DATABASE_URI)
     db.init_app(app)
     login_manager.init_app(app)
 
@@ -33,5 +32,10 @@ def create_app(config_class=Config):
     app.register_blueprint(login_bp)
     app.register_blueprint(part_creation_bp)
     app.register_blueprint(prod_recording_bp)
+
+    @app.before_first_request
+    def initial_setup():
+        with app.app_context():
+            init_db()
 
     return app

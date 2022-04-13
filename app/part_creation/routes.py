@@ -1,4 +1,4 @@
-from app import db
+from app.extensions import db
 from app.part_creation import bp
 from app.part_creation.forms import NewPartTypeForm
 from app.default.models import Batch, Step, Field, PartType
@@ -7,7 +7,7 @@ from flask_login import login_required
 import os
 
 
-@bp.route('/createparttype', methods=['GET', 'POST'])
+@bp.route('/create-part-type', methods=['GET', 'POST'])
 @login_required
 def create_part_type():
     """The page to create a part type"""
@@ -26,13 +26,13 @@ def create_part_type():
     # Fill in the part name form to the current part name
     form.part_name.data = part_type.part_name
 
-    return render_template('createparttype.html',
+    return render_template('create-part-type.html',
                            part_type=part_type,
                            steps=steps,
                            form=form)
 
 
-@bp.route('/newparttype', methods=['POST'])
+@bp.route('/new-part-type', methods=['POST'])
 @login_required
 def new_part_type():
     part_type = PartType(part_name="New Part")
@@ -41,7 +41,7 @@ def new_part_type():
     return redirect(url_for('part_creation.create_part_type', part_type_id=part_type.id))
 
 
-@bp.route('/editstep', methods=['GET', 'POST'])
+@bp.route('/edit-step', methods=['GET', 'POST'])
 @login_required
 def edit_step():
     """The page to edit a step for a part"""
