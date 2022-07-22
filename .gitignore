@@ -6,3 +6,4 @@
 /start.sh
 venv
 /app/static/node_modules/
+/app/static/dist/
