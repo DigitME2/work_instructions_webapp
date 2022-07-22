@@ -1,0 +1,12 @@
+[Unit]
+Description=work_instructions_webapp
+After=network.target
+
+[Service]
+User=root
+WorkingDirectory=/home/user/oee_server
+ExecStart=/home/user/work_instructions_webapp/venv/bin/gunicorn -b :8000 -m 007 --workers=7 --worker-class=gevent "app:create_app()"
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
