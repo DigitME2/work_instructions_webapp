@@ -1,185 +1,191 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div class="container mt-2" onload="setDropdown()">
+    <div class="container mt-2">
 
-    <div class="card-group">
+        <div class="card-group">
 
-        <div class="card border-0" style="min-width: 12rem;">
-            <div class="card-header" style="height: 6rem;">
-                <h2>Part Types</h2>
-            </div>
-            <div class="card-body overflow-auto">
-                <ul class="list-group">
-                    <li class="list-group-item">
-                        <form class="form-group border-0">
-                            <input type="hidden" name="action" value="newPartType">
-                            <input type="submit" id="newPartTypeBtn" class="btn btn-primary"
-                                   name="newPartType"
-                                   value="Create a new part type" formmethod="post"/>
-                        </form>
-                    </li>
-                    {% for p in part_types %}
+            <div class="card border-0" style="min-width: 12rem;">
+                <div class="card-header" style="height: 6rem;">
+                    <h2>Part Types</h2>
+                </div>
+                <div class="card-body overflow-auto">
+                    <ul class="list-group">
                         <li class="list-group-item">
-                            {% if p != None %}
-                                {{ p.part_name }}
-                                <div class="btn-group float-right" role="group">
-                                <form method="post" style="display: inline;">
-                                    <input type="hidden" name="action" value="copyPartType">
-                                    <input type="hidden" name="partTypeId" value="{{ p.id }}">
-                                    <input type="submit" class="btn btn-sm btn-primary float-right"
-                                           name="deletePartType" value="Copy">
-                                </form>
-                                {# Only create a link allowing edits if there aren't any existing batches for the part type #}
-                                {% if p.batches|length == 0 %}
-                                    <form action="{{ url_for('part_creation.create_part_type') }}"
-                                          method="get"
-                                          style="display: inline;">
-                                        <input type="hidden" name="action" value="editPartType">
-                                        <input type="hidden" name="part_type_id" value="{{ p.id }}"/>
-                                        <input type="submit" class="btn btn-sm btn-warning float-right" value="Edit">
-                                    </form>
-
-                                    <form method="post"
-                                          onsubmit="return confirm('Delete part type {{ p.part_name }}?')"
-                                          style="display: inline;">
-                                        <input type="hidden" name="action" value="deletePartType">
-                                        <input type="hidden" name="partTypeId" value="{{ p.id }}">
-                                        <input type="submit" class="btn btn-sm btn-danger float-right"
-                                               name="deletePartType" value="Delete">
-                                    </form>
-                                    </div>
-                                {% endif %}
-                            {% endif %}
-                        </li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </div>
-
-        <div class="card border-0" style="min-width: 12rem;">
-            <div class="card-header" style="height: 6rem;">
-                <h2>Users</h2>
-            </div>
-            <div class="card-body overflow-auto border-0" style="max-height: 30rem;">
-                <ul class="list-group">
-                    <li class="list-group-item">
-                        <form action="newuser">
-                            <input type="submit" id="newUserBtn" class="btn btn-primary" value="New User"
-                                   formmethod="GET"/>
-                        </form>
-                    </li>
-                    {% for user in users %}
-                        <li class="list-group-item">
-                            {{ user.username }}
-                            <form action="{{ url_for('login.change_password') }}"
-                                  method="get"
-                                  style="display: inline;">
-                                <input type="hidden" name="action" value="resetPassword">
-                                <input type="hidden" name="user_id" value="{{ user.id }}"/>
-                                <input type="submit" class="btn btn-warning btn-sm float-right" value="Change Password">
+                            <form class="form-group border-0">
+                                <input type="hidden" name="action" value="newPartType">
+                                <input type="submit" id="newPartTypeBtn" class="btn btn-primary"
+                                       name="newPartType"
+                                       value="Create a new part type" formmethod="post"/>
                             </form>
                         </li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </div>
-
-
-        <div class="card border-0" style="min-width: 12rem;">
-            <div class="card-header" style="height: 6rem;">
-                <h2>Batches</h2>
-            </div>
-            <div class="card-body overflow-auto border-0" style="max-height: 30rem;">
-                <ul class="list-group">
-                    <li class="list-group-item">
-                        <form class="form-group">
-                            <div class="row">
-                                <div class="col p-0">
-                                    <select class="form-control" name="month" id="monthDropdown">
-                                        <option value="1">January</option>
-                                        <option value="2">February</option>
-                                        <option value="3">March</option>
-                                        <option value="4">April</option>
-                                        <option value="5">May</option>
-                                        <option value="6">June</option>
-                                        <option value="7">July</option>
-                                        <option value="8">August</option>
-                                        <option value="9">September</option>
-                                        <option value="10">October</option>
-                                        <option value="11">November</option>
-                                        <option value="12">December</option>
-                                    </select>
-                                </div>
-
-                                <div class="col p-0">
-                                    <select class="form-control" name="year" id="yearDropdown">
-                                        {% for y in range(2019, current_year + 1) %}
-                                            <option value="{{ y }}"> {{ y }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                <div class="col p-0">
-                                    <input type="hidden" name="action" value="alterDates">
-                                    <input class="btn btn-primary" type="submit" name="alterDates" value="Refresh" formmethod="post">
-                                </div>
-                            </div>
-                        </form>
-                    </li>
-                    {% for b in batches %}
-                        <li class="list-group-item">
-                            <div class="row mt-3">
-                                {% if b != None %}
-                                    <div class="col-6">
-                                        Batch {{ b.batch_number }} - {{ b.part_type.part_name }}
-                                        ({{ b.parts|length }}
-                                        parts)
-                                        {# Download data button #}
-                                    </div>
-                                    <div class="col">
-                                    <div class="row">
-                                        <form>
-                                            <input type="hidden" name="batchId" value="{{ b.id }}"/>
-                                            <input type="hidden" name="action" value="downloadData">
-                                            <input type="submit" class="btn btn-sm btn-primary float-right" name="downloadData"
-                                                   value="Download data" formmethod="post"/>
+                        {% for p in part_types %}
+                            <li class="list-group-item">
+                                {% if p != None %}
+                                    {{ p.part_name }}
+                                    <div class="btn-group float-right" role="group">
+                                        <form method="post" style="display: inline;">
+                                            <input type="hidden" name="action" value="copyPartType">
+                                            <input type="hidden" name="partTypeId" value="{{ p.id }}">
+                                            <input type="submit" class="btn btn-sm btn-primary float-right"
+                                                   name="deletePartType" value="Copy">
                                         </form>
+                                        {# Only create a link allowing edits if there aren't any existing batches for the part type #}
+                                        {% if p.batches|length == 0 %}
+                                            <form action="{{ url_for('part_creation.create_part_type') }}"
+                                                  method="get"
+                                                  style="display: inline;">
+                                                <input type="hidden" name="action" value="editPartType">
+                                                <input type="hidden" name="part_type_id" value="{{ p.id }}"/>
+                                                <input type="submit" class="btn btn-sm btn-warning float-right"
+                                                       value="Edit">
+                                            </form>
+
+                                            <form method="post"
+                                                  onsubmit="return confirm('Delete part type {{ p.part_name }}?')"
+                                                  style="display: inline;">
+                                                <input type="hidden" name="action" value="deletePartType">
+                                                <input type="hidden" name="partTypeId" value="{{ p.id }}">
+                                                <input type="submit" class="btn btn-sm btn-danger float-right"
+                                                       name="deletePartType" value="Delete">
+                                            </form>
+                                            </div>
+                                        {% endif %}
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card border-0" style="min-width: 12rem;">
+                <div class="card-header" style="height: 6rem;">
+                    <h2>Users</h2>
+                </div>
+                <div class="card-body overflow-auto border-0" style="max-height: 30rem;">
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <form action="newuser">
+                                <input type="submit" id="newUserBtn" class="btn btn-primary" value="New User"
+                                       formmethod="GET"/>
+                            </form>
+                        </li>
+                        {% for user in users %}
+                            <li class="list-group-item">
+                                {{ user.username }}
+                                <form action="{{ url_for('login.change_password') }}"
+                                      method="get"
+                                      style="display: inline;">
+                                    <input type="hidden" name="action" value="resetPassword">
+                                    <input type="hidden" name="user_id" value="{{ user.id }}"/>
+                                    <input type="submit" class="btn btn-warning btn-sm float-right"
+                                           value="Change Password">
+                                </form>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+
+            <div class="card border-0" style="min-width: 12rem;">
+                <div class="card-header" style="height: 6rem;">
+                    <h2>Batches</h2>
+                </div>
+                <div class="card-body overflow-auto border-0" style="max-height: 30rem;">
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <form class="form-group">
+                                <div class="row">
+                                    <div class="col p-0">
+                                        <select class="form-select" name="month" id="monthDropdown">
+                                            <option value="1">January</option>
+                                            <option value="2">February</option>
+                                            <option value="3">March</option>
+                                            <option value="4">April</option>
+                                            <option value="5">May</option>
+                                            <option value="6">June</option>
+                                            <option value="7">July</option>
+                                            <option value="8">August</option>
+                                            <option value="9">September</option>
+                                            <option value="10">October</option>
+                                            <option value="11">November</option>
+                                            <option value="12">December</option>
+                                        </select>
                                     </div>
 
-                                    {# Download log button. Don't show if the batch has no CSVs #}
-                                    {% if b.csvs|length > 0 %}
+                                    <div class="col p-0">
+                                        <select class="form-select" name="year" id="yearDropdown">
+                                            {% for y in range(2019, current_year + 1) %}
+                                                <option value="{{ y }}"> {{ y }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col p-0">
+                                        <input type="hidden" name="action" value="alterDates">
+                                        <input class="btn btn-primary" type="submit" name="alterDates" value="Refresh"
+                                               formmethod="post">
+                                    </div>
+                                </div>
+                            </form>
+                        </li>
+                        {% for b in batches %}
+                            <li class="list-group-item">
+                                <div class="row mt-3">
+                                    {% if b != None %}
+                                        <div class="col-6">
+                                            Batch {{ b.batch_number }} - {{ b.part_type.part_name }}
+                                            ({{ b.parts|length }}
+                                            parts)
+                                            {# Download data button #}
+                                        </div>
+                                        <div class="col">
                                         <div class="row">
                                             <form>
                                                 <input type="hidden" name="batchId" value="{{ b.id }}"/>
-                                                <input type="hidden" name="action" value="downloadCsv">
+                                                <input type="hidden" name="action" value="downloadData">
                                                 <input type="submit" class="btn btn-sm btn-primary float-right"
-                                                       name="downloadCsv"
-                                                       value="Download CSV logs" formmethod="post"/>
+                                                       name="downloadData"
+                                                       value="Download data" formmethod="post"/>
+                                            </form>
+                                        </div>
+
+                                        {# Download log button. Don't show if the batch has no CSVs #}
+                                        {% if b.csvs|length > 0 %}
+                                            <div class="row">
+                                                <form>
+                                                    <input type="hidden" name="batchId" value="{{ b.id }}"/>
+                                                    <input type="hidden" name="action" value="downloadCsv">
+                                                    <input type="submit" class="btn btn-sm btn-primary float-right"
+                                                           name="downloadCsv"
+                                                           value="Download CSV logs" formmethod="post"/>
+                                                </form>
+                                            </div>
+                                        {% endif %}
+                                        <div class="row">
+                                            {# Delete batch button #}
+                                            <form onsubmit="return confirm('Delete batch {{ b.batch_number }}?')">
+                                                <input type="hidden" name="batchId" value="{{ b.id }}"/>
+                                                <input type="hidden" name="action" value="deleteBatch">
+                                                <input type="submit" class="btn btn-sm btn-danger float-right"
+                                                       name="deleteBatch"
+                                                       value="Delete batch" formmethod="post"/>
                                             </form>
                                         </div>
                                     {% endif %}
-                                    <div class="row">
-                                        {# Delete batch button #}
-                                        <form onsubmit="return confirm('Delete batch {{ b.batch_number }}?')">
-                                            <input type="hidden" name="batchId" value="{{ b.id }}"/>
-                                            <input type="hidden" name="action" value="deleteBatch">
-                                            <input type="submit" class="btn btn-sm btn-danger float-right" name="deleteBatch"
-                                                   value="Delete batch" formmethod="post"/>
-                                        </form>
                                     </div>
-                                {% endif %}
                                 </div>
-                            </div>
-                        </li>
-                    {% endfor %}
-                </ul>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
 
 
     <script>
-        function setDropdown() {
+        window.onload = function setDropdown() {
             // Set the dropdowns to requested dates
             document.getElementById("monthDropdown").value = "{{ requested_month }}";
             document.getElementById("yearDropdown").value = {{ requested_year }};
