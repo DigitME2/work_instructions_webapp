@@ -75,6 +75,7 @@ def edit_step():
             step.csv_upload = True
         else:
             step.csv_upload = False
+        db.session.commit()
 
         # Upload the image
         if 'image' in request.files:
