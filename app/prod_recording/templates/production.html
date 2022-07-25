@@ -19,9 +19,9 @@
             <div class="row mt-2">
                 <button
                         {% if step.fields|length != 0 %}
-                            class="btn btn-default collapse_btn active hasFields"
+                            class="btn btn-light collapse_btn active hasFields"
                         {% else %}
-                            class="btn btn-default collapse_btn active"
+                            class="btn btn-light collapse_btn active"
                         {% endif %}>
 
                     <h2>{{ step.step_title }}</h2>
@@ -35,7 +35,7 @@
 
                         <div class="image">
                             {% if step.step_image %}
-                                <img class="img-fluid rounded float-right" src="{{ step.step_image }}"/>
+                                <img class="img-fluid rounded float-right" src="{{ step.step_image }}" alt="Instructional Image"/>
                             {% endif %}
                         </div>
                     </div>
@@ -50,7 +50,7 @@
                                       enctype="multipart/form-data">
                                     <input type="hidden" name="stepId" value="{{ step.id }}">
                                     <input type="hidden" name="action" value="saveStep">
-                                    <input type="submit" class="btn btn-success" value="Save Step">
+                                    <input type="submit" class="btn btn-primary" value="Save Step">
                                     <div style="max-height: 500px; overflow-y:auto">
                                         <table class="table">
                                             <td></td>
@@ -162,7 +162,7 @@
               onsubmit="return confirm('Mark batch {{ current_batch.batch_number }} as completed?')">
             <input type="hidden" name="batchId" value="{{ current_batch.id }}"/>
             <input type="hidden" name="action" value="completeBatch">
-            <input type="submit" class="btn btn-success" name="completeBatch" value="Mark batch as completed"
+            <input type="submit" class="btn btn-primary" name="completeBatch" value="Mark batch as completed"
                    formmethod="post"/>
             <button type="button" id="collapseAll" class="collapse_btn btn btn-primary active">Collapse Steps That Do
                 Not
@@ -184,7 +184,7 @@
         // database id of the field it is disabling
         function disableFields(element) {
             // Set the all-parts field
-            var allPartsField = document.getElementById("0:" + element.name);
+            let allPartsField = document.getElementById("0:" + element.name);
 
             if (element.checked) {
                 allPartsField.style = "";
@@ -195,7 +195,7 @@
             }
 
             // Set the separate fields
-            var fields = document.getElementsByClassName(element.name);
+            let fields = document.getElementsByClassName(element.name);
             for (var i = 0; i < fields.length; i++) {
                 if (element.checked) {
                     fields[i].disabled = true;
@@ -213,8 +213,8 @@
 
     <script>
         // Controls collapsing steps
-        var coll = document.getElementsByClassName("collapse_btn");
-        var i;
+        let coll = document.getElementsByClassName("collapse_btn");
+        let i;
 
         for (i = 0; i < coll.length; i++) {
             coll[i].addEventListener("click", function () {
@@ -236,9 +236,10 @@
             }
 
             function toggleAll(collapseAllButton) {
-                var content = document.getElementsByClassName("collapsibleStep");
+                let content = document.getElementsByClassName("collapsibleStep");
+                let collapsing = false;
                 if (collapseAllButton.classList.contains("active")) {
-                    var collapsing = true;
+                    collapsing = true;
                 }
                 for (i = 0; i < content.length; i++) {
                     if (!content[i].classList.contains("hasFields")) {
@@ -249,7 +250,7 @@
                     } else {
                         content[i].style.display = "flex"
                     }
-                    var button = content[i].previousElementSibling;
+                    let button = content[i].previousElementSibling;
                     if (collapsing) {
                         if (button.classList.contains("active")) {
                             button.classList.remove("active")
@@ -273,8 +274,7 @@
             });
         </script>
     {% endif %}
-
-    </div>
+    
 
 {% endblock %}
 
