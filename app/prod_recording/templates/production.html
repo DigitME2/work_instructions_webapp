@@ -3,66 +3,62 @@
 
 {#    Macro to create a single step. #}
 {% macro showStep(step) %}
-    <div class="row">
-        <div class="col">
+    <div
+            {% if step.fields|length != 0 %}
+                class="step collapsibleStep"
+            {% else %}
+                class="step collapsibleStep hasFields"
+            {% endif %}
+            {% if step.step_number| int % 2 == 0 %}
+                style="background-color: lightgray"
+            {% else %}
+                style="background-color: white"
+            {% endif %}
+                id="step{{ step.step_number }}">
+        <div class="container">
+            <div class="row mt-2">
+                <button
+                        {% if step.fields|length != 0 %}
+                            class="btn btn-default collapse_btn active hasFields"
+                        {% else %}
+                            class="btn btn-default collapse_btn active"
+                        {% endif %}>
 
-            <button
-                    {% if step.fields|length != 0 %}
-                        class="btn collapse_btn active hasFields"
-                    {% else %}
-                        class="btn collapse_btn active"
-                    {% endif %}>
+                    <h2>{{ step.step_title }}</h2>
+                </button>
+                <div class="row mt-2">
 
-                <h2>{{ step.step_title }}</h2>
-            </button>
-
-            <div
-                    {% if step.fields|length != 0 %}
-                        class="step collapsibleStep"
-                    {% else %}
-                        class="step collapsibleStep hasFields"
-                    {% endif %}
-                    {% if step.step_number| int % 2 == 0 %}
-                        style="background-color: lightgray"
-                    {% else %}
-                        style="background-color: white"
-                    {% endif %}
-                        id="step{{ step.step_number }}"
-            >
-
-                <div class="col">
-                    <div class="stepInstructions mb-2">
-                        {{ step.step_instructions }}
-                    </div>
-
-                    <div class="row">
-                        <div class="col-8 col-sm-6">
-                            <div class="image">
-                                {% if step.step_image %}
-                                    <img class="img-fluid rounded float-right" src="{{ step.step_image }}"/>
-                                {% endif %}
-                            </div>
+                    <div class="col-4">
+                        <div class="stepInstructions">
+                            <p class="fs-4">{{ step.step_instructions }}</p>
                         </div>
 
-                        <div class="col-8 col-sm-6">
-                            {% if step.fields|length != 0 %}
-                                <div class="dataFields">
-                                    <form action="{{ url_for('prod_recording.production') }}?batch_id={{ current_batch.id }}"
-                                          class="form-group"
-                                          method="POST"
-                                          name="formStepId{{ step.id }}"
-                                          enctype="multipart/form-data">
-                                        <input type="hidden" name="stepId" value="{{ step.id }}">
-                                        <input type="hidden" name="action" value="saveStep">
-                                        <input type="submit" class="btn btn-success" value="Save Step">
+                        <div class="image">
+                            {% if step.step_image %}
+                                <img class="img-fluid rounded float-right" src="{{ step.step_image }}"/>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="col-8">
+                        {% if step.fields|length != 0 %}
+                            <div class="dataFields">
+                                <form action="{{ url_for('prod_recording.production') }}?batch_id={{ current_batch.id }}"
+                                      class="form-group"
+                                      method="POST"
+                                      name="formStepId{{ step.id }}"
+                                      enctype="multipart/form-data">
+                                    <input type="hidden" name="stepId" value="{{ step.id }}">
+                                    <input type="hidden" name="action" value="saveStep">
+                                    <input type="submit" class="btn btn-success" value="Save Step">
+                                    <div style="max-height: 500px; overflow-y:auto">
                                         <table class="table">
                                             <td></td>
 
                                             {% for field in step.fields %}
                                                 {# Check whether all the batch's parts should share the same value for a field #}
                                                 <td>
-                                                    {{ field.field_name }}
-                                                    <br>
+                                                    <p class="fs-5">{{ field.field_name }}</p>
                                                     <label>
                                                         <input id="checkboxId{{ field.id }}"
                                                                class="form-check-input"
@@ -128,30 +124,30 @@
                                                 </tr>
                                             {% endfor %}
                                         </table>
+                                    </div>
 
-                                        {% if step.csv_upload %}
-                                            <div id="uploadCsvForm">
-                                                <h2>Attach CSV</h2>
-                                                <span class="btn btn-default btn-file">
+                                    {% if step.csv_upload %}
+                                        <div id="uploadCsvForm">
+                                            <h2>Attach CSV</h2>
+                                            <span class="btn btn-default btn-file">
                                     <input type="file" name="csv_file">
                                     </span>
-                                                <input type="submit" value="Upload CSV">
-                                            </div>
-                                            {#  Flash any messages for the current step #}
-                                            {% with messages = get_flashed_messages(category_filter=["step" + step.id|string]) %}
-                                                {% if messages %}
-                                                    <ul>
-                                                        {% for message in messages %}
-                                                            <li class="message">{{ message }}</li>
-                                                        {% endfor %}
-                                                    </ul>
-                                                {% endif %}
-                                            {% endwith %}
-                                        {% endif %}
-                                    </form>
-                                </div>
-                            {% endif %}
-                        </div>
+                                            <input type="submit" value="Upload CSV">
+                                        </div>
+                                        {#  Flash any messages for the current step #}
+                                        {% with messages = get_flashed_messages(category_filter=["step" + step.id|string]) %}
+                                            {% if messages %}
+                                                <ul>
+                                                    {% for message in messages %}
+                                                        <li class="message">{{ message }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% endif %}
+                                        {% endwith %}
+                                    {% endif %}
+                                </form>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -162,20 +158,25 @@
 
 {% block content %}
     <div class="container">
-        <form class="form-control border-0" onsubmit="return confirm('Mark batch {{ current_batch.batch_number }} as completed?')">
+        <form class="form-control border-0"
+              onsubmit="return confirm('Mark batch {{ current_batch.batch_number }} as completed?')">
             <input type="hidden" name="batchId" value="{{ current_batch.id }}"/>
             <input type="hidden" name="action" value="completeBatch">
-            <input type="submit" class="btn btn-success" name="completeBatch" value="Mark batch as completed" formmethod="post"/>
-            <button type="button" id="collapseAll" class="collapse_btn btn btn-primary active">Collapse Steps That Do Not Require Data Input</button>
+            <input type="submit" class="btn btn-success" name="completeBatch" value="Mark batch as completed"
+                   formmethod="post"/>
+            <button type="button" id="collapseAll" class="collapse_btn btn btn-primary active">Collapse Steps That Do
+                Not
+                Require Data Input
+            </button>
         </form>
-
-
-
-        {% for step in steps %}
-            {{ showStep(step) }}
-        {% endfor %}
-
     </div>
+
+
+    {% for step in steps %}
+        {{ showStep(step) }}
+    {% endfor %}
+
+
 
     <script>
 
@@ -227,7 +228,7 @@
 
             function toggleElement(element) {
                 if (element.style.display === "none") {
-                    element.style.display = "block";
+                    element.style.display = "flex";
                 } else {
                     element.style.display = "none";
                 }
@@ -246,7 +247,7 @@
                     if (collapsing) {
                         content[i].style.display = "none"
                     } else {
-                        content[i].style.display = "block"
+                        content[i].style.display = "flex"
                     }
                     var button = content[i].previousElementSibling;
                     if (collapsing) {

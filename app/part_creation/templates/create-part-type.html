@@ -8,8 +8,9 @@
 
             {{ form.hidden_tag() }}
             <p>
-                {{ form.part_name.label }}<br>
-                {{ form.part_name(size=32) }} {{ form.submit() }}
+                {{ form.part_name.label(class_="form-label") }}
+                {{ form.part_name(size=32, class="form-control") }}
+                {{ form.submit(class_="btn btn-primary mt-2") }}
                 {% for error in form.part_name.errors %}
                     <span style="color: red;">[{{ error }}]</span>
                 {% endfor %}
@@ -22,7 +23,7 @@
         <h2> Steps </h2>
         <form action="{{ url_for('part_creation.add_step') }}" method="post">
             <input type="hidden" name="part_type_id" value="{{ part_type.id }}"/>
-            <input type="submit" value="Create Step"/>
+            <input type="submit" value="Create Step" class="btn btn-primary"/>
         </form>
         <!--Create the list of existing steps-->
         {% for s in steps %}
@@ -34,7 +35,7 @@
 
         <form action="{{ url_for('part_creation.delete_step') }}" method="post">
             <input type="hidden" name="part_type_id" value="{{ part_type.id }}"/>
-            <input type="submit" value="Delete Last Step"/>
+            <input type="submit" class="btn btn-danger" value="Delete Last Step"/>
         </form>
     </div>
 

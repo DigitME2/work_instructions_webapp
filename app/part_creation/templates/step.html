@@ -1,75 +1,89 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div class="container">
-    <form method="get" action="{{ url_for('part_creation.create_part_type') }}">
-        <input type="hidden" name="part_type_id" value="{{ part_type.id }}"/>
-        <input type="submit" value="< Back to Create Part screen"/>
-    </form>
-    <div class="centre">
-        <form id="stepInfoForm" name="stepInfo" action="" method="post" enctype="multipart/form-data">
-
-            <input type="hidden" name="formName" value="stepInfo"/>
-            <div id="stepInfoCreationForm" class="stepCreationColumn">
-                <h2>Step Info</h2>
-                <label for="stepTitleInput">Step Title</label><br>
-                <input type="text"
-                       id="stepTitleInput"
-                       name="stepTitle"
-                       value="{{ step.step_title }}"><br>
-                <label for="stepInstructionsInput">Step Instructions</label><br>
-                <textarea
-                        id="stepInstructionsInput"
-                        name="stepInstructions">{{ step.step_instructions }}</textarea>
-
-            </div>
-            <div id="dataCreationForm" class="stepCreationColumn">
-                <h2>Data to record during step</h2>
-
-                <input type="checkbox" id="importCsvCheckbox" name="importCsvCheckbox" Value="importCsv"
-                        {% if step.csv_upload %}
-                       checked="checked"
-                        {% endif %}
-                >
-                <label for="importCsvCheckbox">Import a CSV File here</label>
-                <br> <br>
-                <label for="newField">Add new data field</label><br>
-                <input type="checkbox" id="allPartsCheckbox" Value="allParts">
-                <label for="allPartsCheckbox">Same value for all parts in batch</label>
-                <br>
-
-                <input type="text" id="newField" placeholder="New Field Name...">
-                <button type="button" onclick="addToList()">Add</button>
-
-
-                <ul id="fieldList">
-                    {% for f in fields %}
-                        {% if f != None %}
-                            <li class="fieldLi">{{ f.field_name }}</li>
-                        {% endif %}
-                    {% endfor %}
-                </ul>
-
-            </div>
-            <div id="uploadImageForm" class="stepCreationColumn">
-                <h2>Image</h2>
-                <input type="hidden" name="formName" value="uploadImage"/>
-                <span class="btn btn-default btn-file">
-                <input type="file" name="image">
-                </span>
-                <br>
-                <div id="uploadImagePreview" class="stepCreationColumn">
-                    {% if step.step_image %}
-                        <img id="uploadImage" src="{{ step.step_image }}">
-                    {% endif %}
-                </div>
-            </div>
-            <input type="submit" id="stepFormSubmit" value="Save"><br>
+    <div class="container mt-2">
+        <form method="get" action="{{ url_for('part_creation.create_part_type') }}">
+            <input type="hidden" name="part_type_id" value="{{ part_type.id }}"/>
+            <input type="submit" class="btn btn-primary" value="< Back to Create Part screen"/>
         </form>
-    </div>
+        <div class="container">
+            <form id="stepInfoForm" name="stepInfo" action="" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="formName" value="stepInfo"/>
+                <div class="row">
+
+                    <div id="stepInfoCreationForm" class="col-4">
+                        <h2>Step Info</h2>
+                        <label for="stepTitleInput" class="form-label">Step Title</label>
+                        <input type="text"
+                               id="stepTitleInput"
+                               class="form-control"
+                               name="stepTitle"
+                               value="{{ step.step_title }}">
+                        <label for="stepInstructionsInput">Step Instructions</label>
+                        <textarea
+                                id="stepInstructionsInput"
+                                class="form-control"
+                                name="stepInstructions">{{ step.step_instructions }}</textarea>
+                    </div>
+
+                    <div id="dataCreationForm" class="col-4">
+                        <h2>Data</h2>
+                        <p class="form-text">Data to be requested from the user during this step</p>
+
+                        <input type="checkbox" id="allPartsCheckbox" Value="allParts">
+                        <label for="allPartsCheckbox">Same value for all parts in batch</label>
 
 
-    <br>
+
+                        <div class="row">
+                            <div class="col-auto">
+                                <input type="text" class="form-control" id="newField" placeholder="New Field Name...">
+                            </div>
+                            <div class="col-auto">
+                                <button type="button" class="btn btn-primary" onclick="addToList()">Add</button>
+                            </div>
+                        </div>
+
+                        <ul id="fieldList">
+                            {% for f in fields %}
+                                {% if f != None %}
+                                    <li class="fieldLi">{{ f.field_name }}</li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+
+                        <input type="checkbox" id="importCsvCheckbox" name="importCsvCheckbox" Value="importCsv"
+                                {% if step.csv_upload %}
+                               checked="checked"
+                                {% endif %}
+                        >
+                        <label class="mt-5" for="importCsvCheckbox">Request CSV upload for this step</label>
+                    </div>
+
+
+                    <div id="uploadImageForm" class="col-4">
+                        <h2>Image</h2>
+                        <input type="hidden" name="formName" value="uploadImage"/>
+                        <span class="btn btn-default btn-file">
+                            <input type="file" name="image">
+                        </span>
+                        <div id="uploadImagePreview" class="stepCreationColumn">
+                            {% if step.step_image %}
+                                <img id="uploadImage" src="{{ step.step_image }}">
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <input type="submit" class="btn btn-primary mt-4" id="stepFormSubmit" value="Save">
+                </div>
+
+            </form>
+        </div>
+
+
+        <br>
 
 
     </div>
@@ -80,14 +94,13 @@
          */
 
             // Create "close" button and append to each item
-            //var fieldList = document.getElementsByTagName("LI");
         var fieldList = document.getElementsByClassName("fieldLi");
         var i;
         for (i = 0; i < fieldList.length; i++) {
             var delBtn = document.createElement("BUTTON");
             var delTxt = document.createTextNode("Delete");
             delBtn.setAttribute("type", "button");
-            delBtn.className = "close";
+            delBtn.className = "close btn btn-sm btn-danger";
             delBtn.appendChild(delTxt);
             fieldList[i].appendChild(delBtn);
         }
@@ -131,7 +144,7 @@
             var delBtn = document.createElement("BUTTON");
             var txt = document.createTextNode("Delete");
             delBtn.setAttribute("type", "button");
-            delBtn.className = "close";
+            delBtn.className = "close btn btn-sm btn-danger";
             delBtn.appendChild(txt);
             li.appendChild(delBtn);
 
