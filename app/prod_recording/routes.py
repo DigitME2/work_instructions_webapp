@@ -184,7 +184,7 @@ def export():
     else:
         abort(400)
         return
-    return send_file(filename_or_fp=filepath, cache_timeout=-1, as_attachment=True, attachment_filename=new_file_name)
+    return send_file(path_or_file=filepath, cache_timeout=-1, as_attachment=True, attachment_filename=new_file_name)
 
 
 @bp.context_processor

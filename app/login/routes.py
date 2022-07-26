@@ -60,6 +60,6 @@ def change_password():
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
-        redirect(url_for('admin_home'))
+        redirect(url_for('default.admin_home'))
     nav_bar_title = "Change password for " + str(user.username)
     return render_template("changepassword.html", nav_bar_title=nav_bar_title, user=user, form=form)

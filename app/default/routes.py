@@ -114,7 +114,7 @@ def admin_home():
             batch_id = request.form["batchId"]
             filepath = create_csv_from_data(batch_id)
             new_file_name = "batch_{batch}_data.csv".format(batch=batch_id)
-            return send_file(filename_or_fp=filepath, cache_timeout=-1, as_attachment=True,
+            return send_file(path_or_file=filepath, cache_timeout=-1, as_attachment=True,
                              attachment_filename=new_file_name)
 
         if action == "downloadCsv":
@@ -122,7 +122,7 @@ def admin_home():
             batch_id = request.form["batchId"]
             filepath = recreate_csv_log(batch_id)
             new_file_name = "batch_{batch}_log.csv".format(batch=batch_id)
-            return send_file(filename_or_fp=filepath, cache_timeout=-1, as_attachment=True,
+            return send_file(path_or_file=filepath, cache_timeout=-1, as_attachment=True,
                              attachment_filename=new_file_name)
 
     requested_batches_start = datetime(year=requested_year, month=requested_month, day=1, hour=0).timestamp()
