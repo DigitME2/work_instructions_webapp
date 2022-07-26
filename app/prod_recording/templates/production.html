@@ -196,7 +196,7 @@
 
             // Set the separate fields
             let fields = document.getElementsByClassName(element.name);
-            for (var i = 0; i < fields.length; i++) {
+            for (let i = 0; i < fields.length; i++) {
                 if (element.checked) {
                     fields[i].disabled = true;
                     fields[i].style = "background-color: gray;";

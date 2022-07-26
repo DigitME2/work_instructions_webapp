@@ -92,13 +92,10 @@
          * Control the behaviour of the list of data fields
          *
          */
-
-            // Create "close" button and append to each item
-        var fieldList = document.getElementsByClassName("fieldLi");
-        var i;
-        for (i = 0; i < fieldList.length; i++) {
-            var delBtn = document.createElement("BUTTON");
-            var delTxt = document.createTextNode("Delete");
+        const fieldList = document.getElementsByClassName("fieldLi");
+        for (let i = 0; i < fieldList.length; i++) {
+            let delBtn = document.createElement("BUTTON");
+            const delTxt = document.createTextNode("Delete");
             delBtn.setAttribute("type", "button");
             delBtn.className = "close btn btn-sm btn-danger";
             delBtn.appendChild(delTxt);
@@ -106,22 +103,21 @@
         }
 
         // Click on a close button to hide the current list item
-        var close = document.getElementsByClassName("close");
-        var i;
-        for (i = 0; i < close.length; i++) {
+        const close = document.getElementsByClassName("close");
+        for (let i = 0; i < close.length; i++) {
             close[i].onclick = function () {
                 //Hide the element
-                var div = this.parentElement;
-                var len = (div.innerText.length - delTxt.length);
-                var fieldName = div.innerText.substring(0, len); //Remove the "delete" that appears
+                const div = this.parentElement;
+                const len = (div.innerText.length - delTxt.length);
+                let fieldName = div.innerText.substring(0, len); //Remove the "delete" that appears
                 // Remove line breaks that were appearing in fieldName for some reason
                 fieldName = fieldName.replace(/(\r\n\t|\n|\r\t)/gm, "");
                 div.style.display = "none";
                 //Send the POST request to delete the database entry
-                var xhttp = new XMLHttpRequest();
+                const xhttp = new XMLHttpRequest();
                 xhttp.open("POST", "/deletedatafield", true);
                 xhttp.setRequestHeader('Content-Type', 'application/json');
-                var jsonString = '{ "field_name": "' + fieldName + '" , "step_id": "{{step.id}}"}';
+                const jsonString = '{ "field_name": "' + fieldName + '" , "step_id": "{{step.id}}"}';
                 xhttp.send(jsonString);
             }
         }
@@ -129,9 +125,9 @@
 
         // Create a new list item when clicking on the "Add" button, and save it to the database
         function addToList() {
-            var li = document.createElement("li");
-            var inputValue = document.getElementById("newField").value;
-            var t = document.createTextNode(inputValue);
+            const li = document.createElement("li");
+            const inputValue = document.getElementById("newField").value;
+            const t = document.createTextNode(inputValue);
             li.appendChild(t);
             li.className = "fieldLi";
             if (inputValue === '') {
@@ -141,8 +137,8 @@
             }
             document.getElementById("newField").value = "";
 
-            var delBtn = document.createElement("BUTTON");
-            var txt = document.createTextNode("Delete");
+            const delBtn = document.createElement("BUTTON");
+            const txt = document.createTextNode("Delete");
             delBtn.setAttribute("type", "button");
             delBtn.className = "close btn btn-sm btn-danger";
             delBtn.appendChild(txt);
@@ -150,12 +146,12 @@
 
             for (i = 0; i < close.length; i++) {
                 close[i].onclick = function () {
-                    var div = this.parentElement;
+                    const div = this.parentElement;
                     div.style.display = "none";
                 }
             }
-            var allParts = document.getElementById("allPartsCheckbox").checked;
-            var xhttp = new XMLHttpRequest();
+            const allParts = document.getElementById("allPartsCheckbox").checked;
+            const xhttp = new XMLHttpRequest();
             xhttp.open("POST", "/savedatafield", true);
             xhttp.setRequestHeader('Content-Type', 'application/json');
             xhttp.send(

@@ -11,7 +11,7 @@ from app.init_db import init_db
 try:
     from config import Config
 except ModuleNotFoundError:
-    logging.error("Could not find config.py file. An example file is provided as config.py.example")
+    logging.error("Could not find config.py file. An example file is provided in example-confs")
     sys.exit()
 
 
