@@ -3,6 +3,7 @@
 
 {#    Macro to create a single step. #}
 {% macro showStep(step) %}
+{#    Container (allows the full row background to be coloured) #}
     <div
             {% if step.fields|length != 0 %}
                 class="step collapsibleStep"
@@ -15,6 +16,8 @@
                 style="background-color: white"
             {% endif %}
                 id="step{{ step.step_number }}">
+
+        {#    Collapse button, with Step Title as text #}
         <div class="container">
             <div class="row mt-2">
                 <button
@@ -26,9 +29,12 @@
 
                     <h2>{{ step.step_title }}</h2>
                 </button>
+
+                {#    Main body    #}
                 <div class="row mt-2">
 
-                    <div class="col-4">
+                   {#    Step instructions   #}
+                    <div class="col-12 col-lg-4">
                         <div class="stepInstructions">
                             <p class="fs-4">{{ step.step_instructions }}</p>
                         </div>
@@ -40,7 +46,7 @@
                         </div>
                     </div>
 
-                    <div class="col-8">
+                    <div class="col-12 col-lg-8">
                         {% if step.fields|length != 0 %}
                             <div class="dataFields">
                                 <form action="{{ url_for('prod_recording.production') }}?batch_id={{ current_batch.id }}"
@@ -50,16 +56,14 @@
                                       enctype="multipart/form-data">
                                     <input type="hidden" name="stepId" value="{{ step.id }}">
                                     <input type="hidden" name="action" value="saveStep">
-                                    <input type="submit" class="btn btn-primary" value="Save Step">
+                                    <input type="submit" class="btn btn-primary" value="Save Data">
                                     <div style="max-height: 500px; overflow-y:auto">
                                         <table class="table">
-                                            <td></td>
-
                                             {% for field in step.fields %}
                                                 {# Check whether all the batch's parts should share the same value for a field #}
-                                                <td>
+                                                <td class="align-bottom">
                                                     <p class="fs-5">{{ field.field_name }}</p>
-                                                    <label>
+                                                    <label class="form-text">
                                                         <input id="checkboxId{{ field.id }}"
                                                                class="form-check-input"
                                                                value="checkboxId{{ field.id }}"
